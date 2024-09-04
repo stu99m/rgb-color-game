@@ -251,13 +251,13 @@
         }
 
         function getDifferenceText(diff) {
-            let diffText = diff > 0 ? "높습니다" : "낮습니다";
-            let color = diff > 0 ? 'red' : 'blue';
+            let diffText = diff > 0 ? "낮습니다" : "높습니다";
+            let color = diff > 0 ? 'blue' : 'red';
             return `<span style="color:${color};">${Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '')}${diffText}</span>`;
         }
 
         function getSimpleDifferenceText(diff) {
-            let diffText = diff > 0 ? "높음" : "낮음";
+            let diffText = diff > 0 ? "낮음" : "높음";
             let prefix = Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '');
             return prefix + diffText;
         }
