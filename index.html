@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGB 색채 맞추기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .color-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        #targetColor, #userColor {
+            width: 120px;
+            height: 120px;
+            margin: 0 10px;
+            border: 2px solid #000;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .slider-label {
+            width: 50px; /* 고정된 레이블 너비 설정 */
+            text-align: right;
+            margin-right: 10px;
+        }
+        .slider {
+            width: 300px;
+        }
+        .number-input {
+            width: 50px;
+            margin-left: 10px;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .button-container button {
+            display: block;
+            width: 150px;
+            margin: 10px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>RGB 색채 맞추기</h1>
+    
+    <div class="color-container">
+        <div id="targetColor"></div>
+        <div id="userColor"></div>
+    </div>
+    
+    <p>이 색을 맞춰봐!</p>
+    
+    <div class="slider-container">
+        <label for="redSlider" class="slider-label">Red</label>
+        <input type="range" id="redSlider" class="slider" min="0" max="255">
+        <input type="number" id="redNumber" class="number-input" min="0" max="255">
+    </div>
+    <div class="slider-container">
+        <label for="greenSlider" class="slider-label">Green</label>
+        <input type="range" id="greenSlider" class="slider" min="0" max="255">
+        <input type="number" id="greenNumber" class="number-input" min="0" max="255">
+    </div>
+    <div class="slider-container">
+        <label for="blueSlider" class="slider-label">Blue</label>
+        <input type="range" id="blueSlider" class="slider" min="0" max="255">
+        <input type="number" id="blueNumber" class="number-input" min="0" max="255">
+    </div>
+    
+    <div class="button-container">
+        <button onclick="checkColor()">색상 확인</button>
+        <button onclick="showAnswer()">답안지</button>
+        <button onclick="newColor()">새 게임</button>
+    </div>
+
+    <p id="resultText"></p>
+    <p id="answerText"></p>
+
+    <script>
+        let targetColor = {
+            r: Math.floor(Math.random() * 256),
+            g: Math.floor(Math.random() * 256),
+            b: Math.floor(Math.random() * 256)
+        };
+
+        function setTargetColor() {
+            document.getElementById('targetColor').style.backgroundColor = `rgb(${targetColor.r}, ${targetColor.g}, ${targetColor.b})`;
+        }
+
+        function newColor() {
+            targetColor = {
+                r: Math.floor(Math.random() * 256),
+                g: Math.floor(Math.random() * 256),
+                b: Math.floor(Math.random() * 256)
+            };
+            setTargetColor();
+            document.getElementById('resultText').innerText = "";
+            document.getElementById('answerText').innerText = "";
+        }
+
+        function updateUserColor() {
+            let r = document.getElementById('redSlider').value;
+            let g = document.getElementById('greenSlider').value;
+            let b = document.getElementById('blueSlider').value;
+            document.getElementById('userColor').style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function syncSlidersAndNumbers(sliderId, numberId) {
+            let slider = document.getElementById(sliderId);
+            let numberInput = document.getElementById(numberId);
+
+            slider.addEventListener('input', function() {
+                numberInput.value = slider.value;
+                updateUserColor();
+            });
+
+            numberInput.addEventListener('input', function() {
+                slider.value = numberInput.value;
+                updateUserColor();
+            });
+        }
+
+        syncSlidersAndNumbers('redSlider', 'redNumber');
+        syncSlidersAndNumbers('greenSlider', 'greenNumber');
+        syncSlidersAndNumbers('blueSlider', 'blueNumber');
+
+        function checkColor() {
+            let r = parseInt(document.getElementById('redSlider').value);
+            let g = parseInt(document.getElementById('greenSlider').value);
+            let b = parseInt(document.getElementById('blueSlider').value);
+
+            let rDiff = targetColor.r - r;
+            let gDiff = targetColor.g - g;
+            let bDiff = targetColor.b - b;
+
+            let totalDiff = Math.abs(rDiff) + Math.abs(gDiff) + Math.abs(bDiff);
+
+            let resultText;
+
+            if (totalDiff === 0) {
+                resultText = "★완벽해요!★";
+            } else {
+                resultText = `조금 더 고민해봅시다. \n 차이값: Red(${rDiff > 0 ? '+' + rDiff : rDiff}), Green(${gDiff > 0 ? '+' + gDiff : gDiff}), Blue(${bDiff > 0 ? '+' + bDiff : bDiff})`;
+                if (Math.abs(rDiff) <= 10 && Math.abs(gDiff) <= 10 && Math.abs(bDiff) <= 10) {
+                    resultText += " (★잘했어요!★)";
+                }
+            }
+            
+            document.getElementById('resultText').innerText = resultText;
+        }
+
+        function showAnswer() {
+            let r = document.getElementById('redSlider').value;
+            let g = document.getElementById('greenSlider').value;
+            let b = document.getElementById('blueSlider').value;
+
+            let answerText = `주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})\n당신이 입력한 RGB: (${r}, ${g}, ${b})`;
+            document.getElementById('answerText').innerText = answerText;
+        }
+
+        // 처음 페이지 로드 시 색상 설정
+        setTargetColor();
+    </script>
+</body>
+</html>
