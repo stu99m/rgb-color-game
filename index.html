@@ -184,4 +184,88 @@
             let resultText = "";
             let historyText = "";
 
-            if
+            if (Math.abs(rDiff) <= tolerance && Math.abs(gDiff) <= tolerance && Math.abs(bDiff) <= tolerance) {
+                if (rDiff === 0 && gDiff === 0 && bDiff === 0) {
+                    resultText = `★★세상에 마상에 완벽해요!★★<br>`;
+                    resultText += `주어진 RGB이자 당신이 고른 RGB: (${r}, ${g}, ${b})`;
+                    historyText = `★★세상에 마상에 완벽해요!★★<br>`;
+                } else {
+                    resultText = `★잘했어요!★<br>`;
+                    resultText += `주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})<br>`;
+                    resultText += `당신이 고른 RGB: (${r}, ${g}, ${b})`;
+                    historyText = `★잘했어요!★<br>`;
+                }
+                historyText += `<span class="explanation-text">(현재 RGB: ${r}, ${g}, ${b})</span>`;
+            } else {
+                resultText = `조금 더 고민해봅시다.<br><br>`;
+                resultText += `입력된 Red값이 목표값보다 ${getDifferenceText(rDiff)}.<br>`;
+                resultText += `입력된 Green값이 목표값보다 ${getDifferenceText(gDiff)}.<br>`;
+                resultText += `입력된 Blue값이 목표값보다 ${getDifferenceText(bDiff)}.<br><br>`;
+                resultText += `<span class="explanation-text">*값이 '아주' 다르다면 30 이상으로 차이가 난다는 뜻입니다.<br>`;
+                resultText += `*값이 '조금' 다르다면 15 이하로 차이가 난다는 뜻입니다.<br>`;
+                resultText += `*값이 그냥 다르다면 16~29 정도로 차이가 난다는 뜻이겠죠?:D</span>`;
+                
+                historyText = `Red ${getSimpleDifferenceText(rDiff)}, Green ${getSimpleDifferenceText(gDiff)}, Blue ${getSimpleDifferenceText(bDiff)}.<br>`;
+                historyText += `<span class="explanation-text">(현재 RGB: ${r}, ${g}, ${b})</span>`;
+            }
+
+            document.getElementById('resultText').innerHTML = resultText;
+
+            // 기록 저장 (최대 10개로 제한)
+            if (history.length >= 10) {
+                history.pop(); // 가장 오래된 기록 제거
+            }
+
+            history.unshift(historyText); // 가장 최근 기록을 배열의 앞에 추가
+            updateHistory();
+        }
+
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '<span class="explanation-text">(결과는 10개까지 기록되고 오래된 기록은 삭제 됩니다.)</span><br><br>';
+            history.forEach((item, index) => {
+                const li = document.createElement('li');
+                if (index === 0) {
+                    li.innerHTML = `${index + 1}: ${item} <span style="color: red;">←new!</span>`;
+                } else {
+                    li.innerHTML = `${index + 1}: ${item}`;
+                }
+                historyList.appendChild(li);
+            });
+        }
+
+        function getDifferenceText(diff) {
+            if (Math.abs(diff) >= 30) {
+                return "아주 " + (diff > 0 ? "낮습니다" : "높습니다");
+            } else if (Math.abs(diff) <= 15) {
+                return "조금 " + (diff > 0 ? "낮습니다" : "높습니다");
+            } else {
+                return diff > 0 ? "낮습니다" : "높습니다";
+            }
+        }
+
+        function getSimpleDifferenceText(diff) {
+            if (Math.abs(diff) >= 30) {
+                return diff > 0 ? "낮음" : "높음";
+            } else if (Math.abs(diff) <= 15) {
+                return "조금 " + (diff > 0 ? "낮음" : "높음");
+            } else {
+                return diff > 0 ? "낮음" : "높음";
+            }
+        }
+
+        function showAnswer() {
+            let r = parseInt(document.getElementById('redSlider').value);
+            let g = parseInt(document.getElementById('greenSlider').value);
+            let b = parseInt(document.getElementById('blueSlider').value);
+            
+            let answerText = `주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})<br>당신이 고른 RGB: (${r}, ${g}, ${b})`;
+            document.getElementById('answerText').innerHTML = answerText;
+        }
+
+        // 처음 페이지 로드 시 색상 설정
+        setTargetColor();
+        initializeUserColor(); // 사용자 초기 색상 설정
+    </script>
+</body>
+</html>
