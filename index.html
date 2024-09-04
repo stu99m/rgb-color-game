@@ -32,6 +32,9 @@
             text-align: right;
             margin-right: 10px;
         }
+        #redLabel { color: red; }
+        #greenLabel { color: green; }
+        #blueLabel { color: blue; }
         .slider {
             width: 300px;
         }
@@ -46,13 +49,20 @@
             display: block;
             width: 150px;
             margin: 10px auto;
-        }        
+        }
         .explanation-text {
             font-size: 0.9em;
             color: gray;
         }
+        .bold-text {
+            font-weight: bold;
+        }
         #historyList {
             margin-top: 20px;
+        }
+        .result-hint {
+            font-size: 0.9em;
+            color: gray;
         }
     </style>
 </head>
@@ -74,17 +84,17 @@
     <p>이 색을 맞춰봐!</p>
     
     <div class="slider-container">
-        <label for="redSlider" class="slider-label">Red</label>
+        <label id="redLabel" for="redSlider" class="slider-label">Red</label>
         <input type="range" id="redSlider" class="slider" min="0" max="255">
         <input type="number" id="redNumber" class="number-input" min="0" max="255">
     </div>
     <div class="slider-container">
-        <label for="greenSlider" class="slider-label">Green</label>
+        <label id="greenLabel" for="greenSlider" class="slider-label">Green</label>
         <input type="range" id="greenSlider" class="slider" min="0" max="255">
         <input type="number" id="greenNumber" class="number-input" min="0" max="255">
     </div>
     <div class="slider-container">
-        <label for="blueSlider" class="slider-label">Blue</label>
+        <label id="blueLabel" for="blueSlider" class="slider-label">Blue</label>
         <input type="range" id="blueSlider" class="slider" min="0" max="255">
         <input type="number" id="blueNumber" class="number-input" min="0" max="255">
     </div>
@@ -93,14 +103,17 @@
 
     <div class="button-container">
         <button onclick="checkColor()">색상 확인</button>
-        <button onclick="showAnswer()">답안지</button>
+        <button id="answerButton" onclick="toggleAnswer()">답안지</button>
         <button onclick="newColor()">새 게임</button>
     </div>
 
     <p id="resultText"></p>
-    <p id="answerText"></p>
+    <p id="answerText" style="display:none;"></p>
 
-    <ul id="historyList"></ul>
+    <h2 class="bold-text">[결과 기록]</h2>
+    <ul id="historyList">
+        <span class="explanation-text">(결과는 10개까지 기록되고 오래된 기록은 삭제 됩니다.)</span><br><br>
+    </ul>
 
     <script>
         let targetColor = {
@@ -110,6 +123,7 @@
         };
 
         let history = [];  // 기록 저장 배열
+        let showAnswer = false;  // 답안지 토글 상태
 
         function setTargetColor() {
             document.getElementById('targetColor').style.backgroundColor = `rgb(${targetColor.r}, ${targetColor.g}, ${targetColor.b})`;
@@ -123,7 +137,9 @@
             };
             setTargetColor();
             document.getElementById('resultText').innerText = "";
-            document.getElementById('answerText').innerText = "";
+            document.getElementById('answerText').style.display = "none";
+            document.getElementById('answerButton').innerText = "답안지";
+            showAnswer = false;
         }
 
         function updateUserColor() {
@@ -187,20 +203,20 @@
             if (Math.abs(rDiff) <= tolerance && Math.abs(gDiff) <= tolerance && Math.abs(bDiff) <= tolerance) {
                 if (rDiff === 0 && gDiff === 0 && bDiff === 0) {
                     resultText = `★★세상에 마상에 완벽해요!★★<br>`;
-                    resultText += `주어진 RGB이자 당신이 고른 RGB: (${r}, ${g}, ${b})`;
+                    resultText += `<span class="explanation-text">주어진 RGB이자 당신이 고른 RGB: (${r}, ${g}, ${b})</span>`;
                     historyText = `★★세상에 마상에 완벽해요!★★<br>`;
                 } else {
                     resultText = `★잘했어요!★<br>`;
-                    resultText += `주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})<br>`;
-                    resultText += `당신이 고른 RGB: (${r}, ${g}, ${b})`;
+                    resultText += `<span class="explanation-text">주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})</span><br>`;
+                    resultText += `<span class="explanation-text">당신이 고른 RGB: (${r}, ${g}, ${b})</span>`;
                     historyText = `★잘했어요!★<br>`;
                 }
                 historyText += `<span class="explanation-text">(현재 RGB: ${r}, ${g}, ${b})</span>`;
             } else {
                 resultText = `조금 더 고민해봅시다.<br><br>`;
-                resultText += `입력된 Red값이 목표값보다 ${getDifferenceText(rDiff)}.<br>`;
-                resultText += `입력된 Green값이 목표값보다 ${getDifferenceText(gDiff)}.<br>`;
-                resultText += `입력된 Blue값이 목표값보다 ${getDifferenceText(bDiff)}.<br><br>`;
+                resultText += `입력된 <span style="color:red;">Red</span>값이 목표값보다 ${getDifferenceText(rDiff)}.<br>`;
+                resultText += `입력된 <span style="color:green;">Green</span>값이 목표값보다 ${getDifferenceText(gDiff)}.<br>`;
+                resultText += `입력된 <span style="color:blue;">Blue</span>값이 목표값보다 ${getDifferenceText(bDiff)}.<br><br>`;
                 resultText += `<span class="explanation-text">*값이 '아주' 다르다면 30 이상으로 차이가 난다는 뜻입니다.<br>`;
                 resultText += `*값이 '조금' 다르다면 15 이하로 차이가 난다는 뜻입니다.<br>`;
                 resultText += `*값이 그냥 다르다면 16~29 정도로 차이가 난다는 뜻이겠죠?:D</span>`;
@@ -235,32 +251,38 @@
         }
 
         function getDifferenceText(diff) {
-            if (Math.abs(diff) >= 30) {
-                return "아주 " + (diff > 0 ? "낮습니다" : "높습니다");
-            } else if (Math.abs(diff) <= 15) {
-                return "조금 " + (diff > 0 ? "낮습니다" : "높습니다");
-            } else {
-                return diff > 0 ? "낮습니다" : "높습니다";
-            }
+            let diffText = diff > 0 ? "높습니다" : "낮습니다";
+            let color = Math.abs(diff) >= 30 ? 'red' : (Math.abs(diff) <= 15 ? 'blue' : 'gray');
+            return `<span style="color:${color};">${Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '')}${diffText}</span>`;
         }
 
         function getSimpleDifferenceText(diff) {
             if (Math.abs(diff) >= 30) {
-                return diff > 0 ? "낮음" : "높음";
+                return diff > 0 ? "높음" : "낮음";
             } else if (Math.abs(diff) <= 15) {
-                return "조금 " + (diff > 0 ? "낮음" : "높음");
+                return "조금 " + (diff > 0 ? "높음" : "낮음");
             } else {
-                return diff > 0 ? "낮음" : "높음";
+                return diff > 0 ? "높음" : "낮음";
             }
         }
 
-        function showAnswer() {
-            let r = parseInt(document.getElementById('redSlider').value);
-            let g = parseInt(document.getElementById('greenSlider').value);
-            let b = parseInt(document.getElementById('blueSlider').value);
-            
-            let answerText = `주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})<br>당신이 고른 RGB: (${r}, ${g}, ${b})`;
-            document.getElementById('answerText').innerHTML = answerText;
+        function toggleAnswer() {
+            let answerText = document.getElementById('answerText');
+            let answerButton = document.getElementById('answerButton');
+
+            if (showAnswer) {
+                answerText.style.display = "none";
+                answerButton.innerText = "답안지";
+            } else {
+                let r = parseInt(document.getElementById('redSlider').value);
+                let g = parseInt(document.getElementById('greenSlider').value);
+                let b = parseInt(document.getElementById('blueSlider').value);
+                answerText.innerHTML = `주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})<br>당신이 고른 RGB: (${r}, ${g}, ${b})`;
+                answerText.style.display = "block";
+                answerButton.innerText = "답안지 숨기기";
+            }
+
+            showAnswer = !showAnswer;
         }
 
         // 처음 페이지 로드 시 색상 설정
