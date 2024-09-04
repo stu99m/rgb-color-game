@@ -204,14 +204,13 @@
                 if (rDiff === 0 && gDiff === 0 && bDiff === 0) {
                     resultText = `★★세상에 마상에 완벽해요!★★<br>`;
                     resultText += `<span class="explanation-text">주어진 RGB이자 당신이 고른 RGB: (${r}, ${g}, ${b})</span>`;
-                    historyText = `★★세상에 마상에 완벽해요!★★<br>`;
+                    historyText = `★★세상에 마상에 완벽해요!★★`;
                 } else {
                     resultText = `★잘했어요!★<br>`;
                     resultText += `<span class="explanation-text">주어진 RGB: (${targetColor.r}, ${targetColor.g}, ${targetColor.b})</span><br>`;
                     resultText += `<span class="explanation-text">당신이 고른 RGB: (${r}, ${g}, ${b})</span>`;
-                    historyText = `★잘했어요!★<br>`;
+                    historyText = `★잘했어요!★`;
                 }
-                historyText += `<span class="explanation-text">(현재 RGB: ${r}, ${g}, ${b})</span>`;
             } else {
                 resultText = `조금 더 고민해봅시다.<br><br>`;
                 resultText += `입력된 <span style="color:red;">Red</span>값이 목표값보다 ${getDifferenceText(rDiff)}.<br>`;
@@ -220,9 +219,8 @@
                 resultText += `<span class="explanation-text">*값이 '아주' 다르다면 30 이상으로 차이가 난다는 뜻입니다.<br>`;
                 resultText += `*값이 '조금' 다르다면 15 이하로 차이가 난다는 뜻입니다.<br>`;
                 resultText += `*값이 그냥 다르다면 16~29 정도로 차이가 난다는 뜻이겠죠?:D</span>`;
-                
-                historyText = `Red ${getSimpleDifferenceText(rDiff)}, Green ${getSimpleDifferenceText(gDiff)}, Blue ${getSimpleDifferenceText(bDiff)}.<br>`;
-                historyText += `<span class="explanation-text">(현재 RGB: ${r}, ${g}, ${b})</span>`;
+
+                historyText = `Red ${getSimpleDifferenceText(rDiff)}, Green ${getSimpleDifferenceText(gDiff)}, Blue ${getSimpleDifferenceText(bDiff)}.`;
             }
 
             document.getElementById('resultText').innerHTML = resultText;
@@ -242,9 +240,9 @@
             history.forEach((item, index) => {
                 const li = document.createElement('li');
                 if (index === 0) {
-                    li.innerHTML = `${index + 1}: ${item} <span style="color: red;">←new!</span>`;
+                    li.innerHTML = `${index + 1}: ${item} <span style="color: red;">←new!</span><br>(현재 RGB: ${targetColor.r}, ${targetColor.g}, ${targetColor.b})`;
                 } else {
-                    li.innerHTML = `${index + 1}: ${item}`;
+                    li.innerHTML = `${index + 1}: ${item}<br>(현재 RGB: ${targetColor.r}, ${targetColor.g}, ${targetColor.b})`;
                 }
                 historyList.appendChild(li);
             });
