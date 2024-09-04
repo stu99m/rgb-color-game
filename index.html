@@ -151,11 +151,9 @@
                 resultText = `조금 더 고민해봅시다. \n 차이값: Red(${rDiff > 0 ? '+' + rDiff : rDiff}), Green(${gDiff > 0 ? '+' + gDiff : gDiff}), Blue(${bDiff > 0 ? '+' + bDiff : bDiff})`;
                 if (Math.abs(rDiff) <= 10 && Math.abs(gDiff) <= 10 && Math.abs(bDiff) <= 10) {
                     resultText += " (★잘했어요!★)";
-                    resultText += `주어진 HSL: (${targetColor.h}, ${targetColor.s}%, ${targetColor.l})<br>`;
-                    resultText += `당신이 고른 HSL: (${userColor.h}, ${userColor.s}%, ${userColor.l})`;
                 }
             }
-            
+
             document.getElementById('resultText').innerText = resultText;
         }
 
