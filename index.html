@@ -46,10 +46,6 @@
             display: block;
             width: 150px;
             margin: 10px auto;
-        }
-        .explanation-text {
-            font-size: 0.8em;
-            color: #888;
         }        
     </style>
 </head>
@@ -153,9 +149,6 @@
                 resultText = "★완벽해요!★";
             } else {
                 resultText = `조금 더 고민해봅시다. \n 차이값: Red(${rDiff > 0 ? '+' + rDiff : rDiff}), Green(${gDiff > 0 ? '+' + gDiff : gDiff}), Blue(${bDiff > 0 ? '+' + bDiff : bDiff})`;
-                resultText += `<span class="explanation-text">*값이 '아주' 다르다면 30 이상으로 차이가 난다는 뜻입니다.<br>`;
-                resultText += `*값이 '조금' 다르다면 15 이하로 차이가 난다는 뜻입니다.<br>`;
-                resultText += `*값이 그냥 다르다면 16~29 정도로 차이가 난다는 뜻이겠죠?:D</span>`;
                 if (Math.abs(rDiff) <= 10 && Math.abs(gDiff) <= 10 && Math.abs(bDiff) <= 10) {
                     resultText += " (★잘했어요!★)";
                     resultText += `주어진 HSL: (${targetColor.h}, ${targetColor.s}%, ${targetColor.l})<br>`;
