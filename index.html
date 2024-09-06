@@ -250,15 +250,23 @@
         }
 
         function getDifferenceText(diff) {
-            let diffText = diff > 0 ? "낮습니다" : "높습니다";
-            let color = diff > 0 ? 'blue' : 'red';
-            return `<span style="color:${color};">${Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '')}${diffText}</span>`;
+            if (diff === 0) {
+                return `<span style="color:black;">같습니다</span>`;
+            } else {
+                let diffText = diff > 0 ? "낮습니다" : "높습니다";
+                let color = diff > 0 ? 'blue' : 'red';
+                return `<span style="color:${color};">${Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '')}${diffText}</span>`;
+            }
         }
 
         function getSimpleDifferenceText(diff) {
-            let diffText = diff > 0 ? "낮음" : "높음";
-            let prefix = Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '');
-            return prefix + diffText;
+            if (diff === 0) {
+                return "같음";
+            } else {
+                let diffText = diff > 0 ? "낮음" : "높음";
+                let prefix = Math.abs(diff) >= 30 ? '아주 ' : (Math.abs(diff) <= 15 ? '조금 ' : '');
+                return prefix + diffText;
+            }
         }
 
         function toggleAnswer() {
